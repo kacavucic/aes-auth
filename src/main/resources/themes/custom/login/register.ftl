@@ -23,14 +23,14 @@
             </div>
 
             <!-- dob -->
-            <div class="form-group">
-                <div class="${properties.kcLabelWrapperClass!}">
-                    <label for="user.attributes.dob" class="${properties.kcLabelClass!}">Date of birth</label>
-                </div>
-                <div class="${properties.kcInputWrapperClass!}">
-                    <input type="date" class="${properties.kcInputClass!}" id="user.attributes.dob" name="user.attributes.dob" value="${(register.formData['user.attributes.dob']!'')}"/>
-                </div>
-            </div>
+<#--            <div class="form-group">-->
+<#--                <div class="${properties.kcLabelWrapperClass!}">-->
+<#--                    <label for="user.attributes.dob" class="${properties.kcLabelClass!}">Date of birth</label>-->
+<#--                </div>-->
+<#--                <div class="${properties.kcInputWrapperClass!}">-->
+<#--                    <input type="date" class="${properties.kcInputClass!}" id="user.attributes.dob" name="user.attributes.dob" value="${(register.formData['user.attributes.dob']!'')}"/>-->
+<#--                </div>-->
+<#--            </div>-->
             <!-- end of dob -->
 
             <div class="${properties.kcFormGroupClass!} ${messagesPerField.printIfExists('email',properties.kcFormGroupErrorClass!)}">

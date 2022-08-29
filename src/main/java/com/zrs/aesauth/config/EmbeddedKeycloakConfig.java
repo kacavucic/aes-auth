@@ -1,5 +1,8 @@
 package com.zrs.aesauth.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,6 +14,7 @@ import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.keycloak.platform.Platform;
@@ -20,6 +24,7 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 public class EmbeddedKeycloakConfig {
 
@@ -28,8 +33,10 @@ public class EmbeddedKeycloakConfig {
             KeycloakServerProperties keycloakServerProperties, DataSource dataSource) throws Exception {
 
         mockJndiEnvironment(dataSource);
+
         EmbeddedKeycloakApplication.keycloakServerProperties = keycloakServerProperties;
 
+        initKeycloakEnvironmentFromProfiles();
         ServletRegistrationBean<HttpServlet30Dispatcher> servlet = new ServletRegistrationBean<>(
                 new HttpServlet30Dispatcher());
         servlet.addInitParameter("javax.ws.rs.Application", EmbeddedKeycloakApplication.class.getName());
@@ -95,5 +102,32 @@ public class EmbeddedKeycloakConfig {
     @ConditionalOnMissingBean(name = "springBootPlatform")
     protected SimplePlatformProvider springBootPlatform() {
         return (SimplePlatformProvider) Platform.getPlatform();
+    }
+
+    private void initKeycloakEnvironmentFromProfiles() {
+
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("profile.properties")) {
+
+            if (in == null) {
+                log.info("Could not find profile.properties on classpath.");
+                return;
+            }
+
+            Properties profile = new Properties();
+            profile.load(in);
+
+            log.info("Found profile.properties on classpath.");
+            String profilePrefix = "keycloak.profile.";
+            for (Object key : profile.keySet()) {
+                String value = (String) profile.get(key);
+                String featureName = key.toString().toLowerCase();
+                String currentValue = System.getProperty(profilePrefix + featureName);
+                if (currentValue == null) {
+                    System.setProperty(profilePrefix + featureName, value);
+                }
+            }
+        } catch (IOException ioe) {
+            log.warn("Could not read profile.properties.", ioe);
+        }
     }
 }
