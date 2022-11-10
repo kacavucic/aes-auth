@@ -3,16 +3,27 @@
    Therefore the Patternfly background must be set to none. */
 .login-pf {
     background: none;
+    height: auto;
 }
 
 .login-pf body {
-    background: url("../img/keycloak-bg.png") no-repeat center center fixed;
+    background: #37517e;
+    font-family: "Open Sans", sans-serif;
+    color: #444444;
+
+    /*background: url("../img/keycloak-bg.png") no-repeat center center fixed;*/
     background-size: cover;
     height: 100%;
 }
 
 /*IE compatibility*/
 .pf-c-form-control {
+    height: 40px;
+    box-shadow: none;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+
     font-size: 14px;
     font-size: var(--pf-global--FontSize--sm);
     border-width: 1px;
@@ -21,7 +32,7 @@
     border-color: var(--pf-global--BorderColor--300) var(--pf-global--BorderColor--300) var(--pf-global--BorderColor--200) var(--pf-global--BorderColor--300);
     background-color: #FFFFFF;
     background-color: var(--pf-global--BackgroundColor--100);
-    height: 36px;
+    /*height: 36px;*/
     height: calc(var(--pf-c-form-control--FontSize) * var(--pf-c-form-control--LineHeight) + var(--pf-c-form-control--BorderWidth) * 2 + var(--pf-c-form-control--PaddingTop) + var(--pf-c-form-control--PaddingBottom));
     padding: 5px 0.5rem;
     padding: var(--pf-c-form-control--PaddingTop) var(--pf-c-form-control--PaddingRight) var(--pf-c-form-control--PaddingBottom) var(--pf-c-form-control--PaddingLeft);
@@ -141,8 +152,8 @@ textarea.pf-c-form-control {
     padding: var(--pf-c-alert__title--PaddingTop) var(--pf-c-alert__title--PaddingRight) var(--pf-c-alert__title--PaddingBottom) var(--pf-c-alert__title--PaddingLeft);
 }
 
-.pf-c-button{
-    padding:0.375rem 1rem;
+.pf-c-button {
+    padding: 0.375rem 1rem;
     padding: var(--pf-global--spacer--form-element) var(--pf-global--spacer--md);
 }
 
@@ -165,6 +176,7 @@ textarea.pf-c-form-control {
     border: solid var(--pf-global--BorderWidth--sm);
     border-color: rgba(230, 230, 230, 0.5);
 }
+
 /*End of IE compatibility*/
 h1#kc-page-title {
     margin-top: 10px;
@@ -179,12 +191,12 @@ h1#kc-page-title {
     padding: 0;
 }
 
-#kc-locale-dropdown{
+#kc-locale-dropdown {
     display: inline-block;
 }
 
 #kc-locale-dropdown:hover ul {
-    display:block;
+    display: block;
 }
 
 /* IE compatibility */
@@ -234,10 +246,15 @@ div.kc-logo-text span {
 }
 
 #kc-header-wrapper {
-    font-size: 29px;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 56px;
+    color: #fff;
+
+    /*font-size: 29px;*/
     text-transform: uppercase;
     letter-spacing: 3px;
-    line-height: 1.2em;
+    /*line-height: 1.2em;*/
     padding: 62px 10px 20px;
     white-space: normal;
 }
@@ -255,7 +272,7 @@ div.kc-logo-text span {
 
 #kc-username {
     text-align: center;
-    margin-bottom:-10px;
+    margin-bottom: -10px;
 }
 
 #kc-webauthn-settings-form {
@@ -304,7 +321,9 @@ div.kc-logo-text span {
 }
 
 #kc-info-wrapper {
-    font-size: 13px;
+    font-size: 15px;
+
+    /*font-size: 13px;*/
     padding: 15px 35px;
     background-color: #F0F0F0;
 }
@@ -330,7 +349,9 @@ div.kc-logo-text span {
 
 .subtitle {
     text-align: right;
-    margin-top: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-right: 0;
     color: #909090;
 }
 
@@ -349,8 +370,8 @@ ul#kc-totp-supported-apps {
 }
 
 #kc-totp-secret-qr-code {
-    max-width:150px;
-    max-height:150px;
+    max-width: 150px;
+    max-height: 150px;
 }
 
 #kc-totp-secret-key {
@@ -427,7 +448,7 @@ ul#kc-totp-supported-apps {
 }
 
 .kc-social-grid {
-    display:grid;
+    display: grid;
     grid-column-gap: 10px;
     grid-row-gap: 5px;
     grid-column-end: span 6;
@@ -447,32 +468,32 @@ ul#kc-totp-supported-apps {
     text-align: center;
 }
 
-.kc-social-section hr{
+.kc-social-section hr {
     margin-bottom: 10px
 }
 
-.kc-login-tooltip .kc-tooltip-text{
-    top:-3px;
-    left:160%;
+.kc-login-tooltip .kc-tooltip-text {
+    top: -3px;
+    left: 160%;
     background-color: black;
     visibility: hidden;
     color: #fff;
 
-    min-width:130px;
+    min-width: 130px;
     text-align: center;
     border-radius: 2px;
-    box-shadow:0 1px 8px rgba(0,0,0,0.6);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
     padding: 5px;
 
     position: absolute;
-    opacity:0;
-    transition:opacity 0.5s;
+    opacity: 0;
+    transition: opacity 0.5s;
 }
 
 /* Show tooltip */
 .kc-login-tooltip:hover .kc-tooltip-text {
     visibility: visible;
-    opacity:0.7;
+    opacity: 0.7;
 }
 
 /* Arrow for tooltip */
@@ -507,7 +528,9 @@ ul#kc-totp-supported-apps {
 @media (max-width: 767px) {
 
     .login-pf body {
-        background: white;
+        background: #37517e;
+
+        /*background: white;*/
     }
 
     #kc-header {
@@ -518,10 +541,13 @@ ul#kc-totp-supported-apps {
     }
 
     #kc-header-wrapper {
+        line-height: 56px;
+        color: #fff;
+
         font-size: 16px;
         font-weight: bold;
         padding: 20px 60px 0 0;
-        color: #72767b;
+        /*color: #72767b;*/
         letter-spacing: 0;
     }
 
@@ -608,15 +634,16 @@ ul#kc-totp-supported-apps {
         flex-basis: 100%;
     }
 }
+
 /* End of IE11 workaround for select-authenticator screen */
 
-.select-auth-box-arrow{
+.select-auth-box-arrow {
     display: flex;
     align-items: center;
     margin-right: 2rem;
 }
 
-.select-auth-box-icon{
+.select-auth-box-icon {
     display: flex;
     flex: 0 0 2em;
     justify-content: center;
@@ -624,14 +651,14 @@ ul#kc-totp-supported-apps {
     margin-left: 3rem;
 }
 
-.select-auth-box-parent{
+.select-auth-box-parent {
     border-top: 1px solid var(--pf-global--palette--black-200);
     padding-top: 1rem;
     padding-bottom: 1rem;
     cursor: pointer;
 }
 
-.select-auth-box-parent:hover{
+.select-auth-box-parent:hover {
     background-color: #f7f8f8;
 }
 
@@ -656,13 +683,19 @@ ul#kc-totp-supported-apps {
 }
 
 .card-pf {
+    border-top: 3px solid #47b2e4;
+    border-bottom: 3px solid #47b2e4;
+    box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.12);
+    background: #fff;
+    border-radius: 3px;
+
     margin: 0 auto;
-    box-shadow: var(--pf-global--BoxShadow--lg);
+    /*box-shadow: var(--pf-global--BoxShadow--lg);*/
     padding: 0 20px;
-    max-width: 500px;
-    border-top: 4px solid;
-    border-color: #0066CC; /* default - IE compatibility */
-    border-color: var(--pf-global--primary-color--100);
+    max-width: 550px;
+    /*border-top: 4px solid;*/
+    /*border-color: #0066CC; !* default - IE compatibility *!*/
+    /*border-color: var(--pf-global--primary-color--100);*/
 }
 
 /*phone*/
@@ -690,6 +723,7 @@ ul#kc-totp-supported-apps {
     font-size: 15px;
     color: #72767b;
 }
+
 #kc-content-wrapper .row {
     margin-left: 0;
     margin-right: 0;
@@ -730,9 +764,11 @@ ul#kc-totp-supported-apps {
 .kc-recovery-codes-warning {
     margin-bottom: 32px;
 }
+
 .kc-recovery-codes-warning .pf-c-alert__description p {
     font-size: 0.875rem;
 }
+
 .kc-recovery-codes-list {
     list-style: none;
     columns: 2;
@@ -740,10 +776,12 @@ ul#kc-totp-supported-apps {
     padding: 16px 16px 8px 16px;
     border: 1px solid #D2D2D2;
 }
+
 .kc-recovery-codes-list li {
-    margin-bottom: 8px;
+    margin-bttom: 8px;
     font-size: 11px;
 }
+
 .kc-recovery-codes-list li span {
     color: #6A6E73;
     width: 16px;
@@ -755,9 +793,11 @@ ul#kc-totp-supported-apps {
 .kc-recovery-codes-actions {
     margin-bottom: 24px;
 }
+
 .kc-recovery-codes-actions button {
     padding-left: 0;
 }
+
 .kc-recovery-codes-actions button i {
     margin-right: 8px;
 }
@@ -766,4 +806,77 @@ ul#kc-totp-supported-apps {
     align-items: baseline;
     margin-bottom: 16px;
 }
+
 /* End Recovery codes */
+
+.login-pf-page {
+    padding-bottom: 80px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.pf-c-form__label {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.pf-c-form__label-text {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.pf-c-form-control {
+    height: 40px;
+    box-shadow: none;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    border: 1px solid #ced4da
+}
+
+a {
+    color: #47b2e4;
+}
+
+#kc-page-title {
+    font-size: 30px;
+}
+
+.pf-c-button.pf-m-primary {
+    font-size: 15px;
+    background: #47b2e4;
+    border: 0;
+    padding: 12px 34px;
+    color: #fff;
+    transition: 0.4s;
+    border-radius: 20px;
+    margin-top: 0;
+}
+
+.pf-c-button.btn-default {
+    font-size: 15px;
+    background: rgba(71, 178, 228, 0.51);
+    border: 0;
+    padding: 12px 34px;
+    color: #fff;
+    transition: 0.4s;
+    border-radius: 20px;
+    margin-top: 0;
+}
+
+.pf-c-alert__icon {
+    display: inline-block;
+    margin-top: 0;
+}
+
+.pf-c-alert__title.kc-feedback-text {
+    --pf-c-alert__title--FontWeight: var(--pf-global--FontWeight--normal);
+}
+
+#loginUpdatePassSubmitBtn {
+    float: right;
+}

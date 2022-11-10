@@ -72,7 +72,7 @@
   },
   "theme": {
     "staticMaxAge": "${keycloak.theme.staticMaxAge:2592000}",
-    "cacheTemplates": "${keycloak.theme.cacheTemplates:true}",
+    "cacheTemplates": "${keycloak.theme.cacheTemplates:false}",
     "cacheThemes": "${keycloak.theme.cacheThemes:false}",
     "welcomeTheme": "custom",
     "folder": {
