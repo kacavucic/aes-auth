@@ -101,6 +101,17 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sns</artifactId>
+            <version>${aws.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>netty-nio-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
@@ -164,6 +175,8 @@
         <!-- check keycloak-dependencies-server-all effective pom -->
         <infinispan.version>13.0.8.Final</infinispan.version>
         <resteasy.version>3.15.1.Final</resteasy.version>
+        <aws.version>2.18.6</aws.version>
+
     </properties>
 
 </project>
