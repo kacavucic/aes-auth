@@ -3,9 +3,11 @@ package com.zrs.aesauth.spi;
 import com.zrs.aesauth.spi.gateway.SmsServiceFactory;
 import org.keycloak.authentication.*;
 import org.keycloak.authentication.authenticators.browser.AbstractUsernameFormAuthenticator;
-import org.keycloak.credential.*;
+import org.keycloak.credential.CredentialModel;
+import org.keycloak.credential.CredentialProvider;
+import org.keycloak.credential.OTPCredentialProvider;
+import org.keycloak.credential.UserCredentialStore;
 import org.keycloak.forms.login.LoginFormsProvider;
-import org.keycloak.forms.login.freemarker.model.TotpBean;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserCredentialModel;
@@ -31,9 +33,41 @@ public class SmsOtpAuthenticator extends AbstractUsernameFormAuthenticator
     }
 
     public void action(AuthenticationFlowContext context) {
-        this.validateOTP(context);
+        MultivaluedMap<String, String> inputData = context.getHttpRequest().getDecodedFormParameters();
+        String otp = (String) inputData.getFirst("otp");
+        String credentialId = (String) inputData.getFirst("selectedCredentialId");
+        if (credentialId == null || credentialId.isEmpty()) {
+            OTPCredentialModel defaultOTPCredential =
+                    (OTPCredentialModel) this.getCredentialProvider(context.getSession())
+                            .getDefaultCredential(context.getSession(), context.getRealm(), context.getUser());
+            credentialId = defaultOTPCredential == null ? "" : defaultOTPCredential.getId();
+        }
+
+        context.getEvent().detail("selected_credential_id", credentialId);
+        context.form().setAttribute("selectedOtpCredentialId", credentialId);
+        UserModel userModel = context.getUser();
+        if (this.enabledUser(context, userModel)) {
+            if (otp == null) {
+                Response challengeResponse = this.challenge(context, (String) null);
+                context.challenge(challengeResponse);
+            }
+            else {
+                boolean valid = context.getSession().userCredentialManager()
+                        .isValid(context.getRealm(), context.getUser(), new UserCredentialModel(credentialId,
+                                this.getCredentialProvider(context.getSession()).getType(), otp));
+                if (!valid) {
+                    context.getEvent().user(userModel).error("invalid_user_credentials");
+                    Response challengeResponse = this.challenge(context, "invalidTotpMessage", "totp");
+                    context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, challengeResponse);
+                }
+                else {
+                    context.success();
+                }
+            }
+        }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public void authenticate(AuthenticationFlowContext context) {
         KeycloakSession session = context.getSession();
         RealmModel realm = context.getRealm();
@@ -58,19 +92,10 @@ public class SmsOtpAuthenticator extends AbstractUsernameFormAuthenticator
         String credentialId = defaultOTPCredential == null ? "" : defaultOTPCredential.getId();
 
         UserCredentialStore userCredentialStore = session.userCredentialManager();
-        CredentialModel credential = userCredentialStore.getStoredCredentialById(realm,user,credentialId);
+        CredentialModel credential = userCredentialStore.getStoredCredentialById(realm, user, credentialId);
         OTPCredentialModel otpCredentialModel = OTPCredentialModel.createFromCredentialModel(credential);
         OTPSecretData secretData = otpCredentialModel.getOTPSecretData();
         String secret = secretData.getValue();
-
-//        TotpBean totpBean = new TotpBean(session, realm, user, null);
-//        String totpSecret = totpBean.getTotpSecret();
-
-
-//        OTPPolicy policy = context.getRealm().getOTPPolicy();
-//        OTPCredentialModel credentialModel =
-//                OTPCredentialModel.createFromPolicy(context.getRealm(), totpSecret, user.getUsername());
-
         String otp = generator.generateTOTP(secret);
 
         try {
@@ -86,57 +111,22 @@ public class SmsOtpAuthenticator extends AbstractUsernameFormAuthenticator
             config.put("simulation", String.valueOf(simulation));
             SmsServiceFactory.get(config).send(phoneNumber, smsText);
 
-
-            Response challengeResponse =
-                    context.form().setAttribute("phoneNumber", phoneNumberMasked)
-                            .setAttribute("realm", context.getRealm()).createLoginTotp();
+            Response challengeResponse = context.form()
+                    .setAttribute("phoneNumber", phoneNumberMasked)
+                    .setAttribute("realm", context.getRealm()).createLoginTotp();
             context.challenge(challengeResponse);
-
         } catch (Exception e) {
-            Response challengeResponse = context.form().setError("smsAuthSmsNotSent", e.getMessage())
+            Response challengeResponse = context.form()
+                    .setError("smsAuthSmsNotSent", e.getMessage())
                     .createErrorPage(Response.Status.INTERNAL_SERVER_ERROR);
-            context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
-                    challengeResponse);
+            context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR, challengeResponse);
         }
-
     }
 
-    // TODO resend OTP i ovde i na config
+    //TODO resend OTP i ovde i na config; resedns on refresh
 
     public void validateOTP(AuthenticationFlowContext context) {
-        MultivaluedMap<String, String> inputData = context.getHttpRequest().getDecodedFormParameters();
-        String otp = (String) inputData.getFirst("otp");
-        String credentialId = (String) inputData.getFirst("selectedCredentialId");
-        if (credentialId == null || credentialId.isEmpty()) {
-            OTPCredentialModel
-                    defaultOTPCredential = (OTPCredentialModel) this.getCredentialProvider(context.getSession())
-                    .getDefaultCredential(context.getSession(), context.getRealm(), context.getUser());
-            credentialId = defaultOTPCredential == null ? "" : defaultOTPCredential.getId();
-        }
 
-        context.getEvent().detail("selected_credential_id", credentialId);
-        context.form().setAttribute("selectedOtpCredentialId", credentialId);
-        UserModel userModel = context.getUser();
-        if (this.enabledUser(context, userModel)) {
-            if (otp == null) {
-                Response challengeResponse = this.challenge(context, (String) null);
-                context.challenge(challengeResponse);
-            }
-            else {
-                boolean valid = context.getSession().userCredentialManager()
-                        .isValid(context.getRealm(), context.getUser(), new CredentialInput[]{
-                                new UserCredentialModel(credentialId,
-                                        this.getCredentialProvider(context.getSession()).getType(), otp)});
-                if (!valid) {
-                    context.getEvent().user(userModel).error("invalid_user_credentials");
-                    Response challengeResponse = this.challenge(context, "invalidTotpMessage", "totp");
-                    context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, challengeResponse);
-                }
-                else {
-                    context.success();
-                }
-            }
-        }
     }
 
     public boolean requiresUser() {

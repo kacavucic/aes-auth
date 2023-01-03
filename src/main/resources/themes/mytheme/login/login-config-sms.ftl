@@ -35,10 +35,14 @@
                         id="cancelTOTPBtn" name="cancel-aia" value="true" />${msg("doCancel")}
                 </button>
             <#else>
-                <input type="submit"
-                       class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}"
-                       id="saveTOTPBtn" value="${msg("doSubmit")}"
-                />
+                <div class="${properties.kcFormGroupClass!}">
+                    <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
+                        <input type="submit"
+                               class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}"
+                               id="saveTOTPBtn" value="${msg("doSubmit")}"
+                        />
+                    </div>
+                </div>
             </#if>
         </form>
     <#elseif section = "info" > Enter the OTP we sent to

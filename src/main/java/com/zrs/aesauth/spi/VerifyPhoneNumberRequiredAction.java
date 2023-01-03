@@ -44,6 +44,7 @@ public class VerifyPhoneNumberRequiredAction
     public void evaluateTriggers(RequiredActionContext context) {
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public void requiredActionChallenge(RequiredActionContext context) {
         KeycloakSession session = context.getSession();
         RealmModel realm = context.getRealm();
@@ -61,13 +62,8 @@ public class VerifyPhoneNumberRequiredAction
         String phoneNumber = user.getFirstAttribute("phoneNumber");
         String phoneNumberMasked = phoneNumber.replaceAll(".(?=.{4})", "*");
 
-
         TotpBean totpBean = new TotpBean(session, realm, user, null);
         String totpSecret = totpBean.getTotpSecret();
-
-//        OTPPolicy policy = context.getRealm().getOTPPolicy();
-//        OTPCredentialModel credentialModel =
-//                OTPCredentialModel.createFromPolicy(context.getRealm(), totpSecret, user.getUsername());
 
         String otp = generator.generateTOTP(totpSecret);
 
@@ -91,15 +87,14 @@ public class VerifyPhoneNumberRequiredAction
                             .setAttribute("mode", context.getUriInfo().getQueryParameters().getFirst("mode"))
                             .createForm(TPL_CODE);
             context.challenge(challengeResponse);
-
         } catch (Exception e) {
 
-            Response challengeResponse = context.form().addError(new FormMessage("totp", "smsAuthSmsNotSent"))
+            Response challengeResponse = context.form()
+                    .addError(new FormMessage("totp", "smsAuthSmsNotSent"))
                     .createForm(TPL_CODE);
             context.challenge(challengeResponse);
 
         }
-
     }
 
     public void processAction(RequiredActionContext context) {
