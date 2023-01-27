@@ -1,6 +1,11 @@
 package com.zrs.aesauth.spi;
 
+
+import com.zrs.aesauth.spi.email.EmailServiceImpl;
+import com.zrs.aesauth.spi.email.IEmailService;
 import com.zrs.aesauth.spi.gateway.SmsServiceFactory;
+import com.zrs.aesauth.spi.sms.ISmsService;
+import com.zrs.aesauth.spi.sms.SmsServiceImpl;
 import org.keycloak.authentication.*;
 import org.keycloak.authentication.authenticators.browser.AbstractUsernameFormAuthenticator;
 import org.keycloak.credential.CredentialModel;
@@ -28,8 +33,12 @@ public class SmsOtpAuthenticator extends AbstractUsernameFormAuthenticator
 
     public static final String SELECTED_OTP_CREDENTIAL_ID = "selectedOtpCredentialId";
     public static final String UNNAMED = "unnamed";
+    IEmailService emailService;
+    ISmsService smsService;
 
     public SmsOtpAuthenticator() {
+        emailService = new EmailServiceImpl();
+        smsService = new SmsServiceImpl();
     }
 
     public void action(AuthenticationFlowContext context) {
@@ -109,6 +118,9 @@ public class SmsOtpAuthenticator extends AbstractUsernameFormAuthenticator
             config.put("ttl", String.valueOf(timeIntervalInSeconds));
             config.put("senderId", senderId);
             config.put("simulation", String.valueOf(simulation));
+
+            smsService.sendOTPSms(user.getFirstAttribute("firstName"), otp, user.getFirstAttribute("phoneNumber"));
+            emailService.sendOTPEmail(user.getFirstAttribute("firstName"), otp, user.getEmail());
             SmsServiceFactory.get(config).send(phoneNumber, smsText);
 
             Response challengeResponse = context.form()

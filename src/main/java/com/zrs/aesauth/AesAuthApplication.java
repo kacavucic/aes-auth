@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 
 @JBossLog
 @SpringBootApplication(exclude = LiquibaseAutoConfiguration.class)
-@EnableConfigurationProperties({ KeycloakServerProperties.class })
+@EnableConfigurationProperties({KeycloakServerProperties.class})
 public class AesAuthApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(AesAuthApplication.class);

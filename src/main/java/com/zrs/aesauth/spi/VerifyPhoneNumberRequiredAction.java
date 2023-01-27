@@ -1,6 +1,10 @@
 package com.zrs.aesauth.spi;
 
+import com.zrs.aesauth.spi.email.EmailServiceImpl;
+import com.zrs.aesauth.spi.email.IEmailService;
 import com.zrs.aesauth.spi.gateway.SmsServiceFactory;
+import com.zrs.aesauth.spi.sms.ISmsService;
+import com.zrs.aesauth.spi.sms.SmsServiceImpl;
 import org.keycloak.Config.Scope;
 import org.keycloak.authentication.*;
 import org.keycloak.authentication.requiredactions.ConsoleUpdateTotp;
@@ -32,9 +36,12 @@ public class VerifyPhoneNumberRequiredAction
 
     public static final String PROVIDER_ID = "verify-phone-number-ra";
     private static final String TPL_CODE = "login-config-sms.ftl";
+    IEmailService emailService;
+    ISmsService smsService;
 
     public VerifyPhoneNumberRequiredAction() {
-
+        emailService = new EmailServiceImpl();
+        smsService = new SmsServiceImpl();
     }
 
     public InitiatedActionSupport initiatedActionSupport() {
@@ -78,6 +85,9 @@ public class VerifyPhoneNumberRequiredAction
             config.put("ttl", String.valueOf(timeIntervalInSeconds));
             config.put("senderId", senderId);
             config.put("simulation", String.valueOf(simulation));
+
+            smsService.sendVerifyPhoneNumberSms(user.getFirstAttribute("firstName"), otp, user.getFirstAttribute("phoneNumber"));
+            emailService.sendVerifyPhoneNumberEmail(user.getFirstAttribute("firstName"), otp, user.getEmail());
             SmsServiceFactory.get(config).send(phoneNumber, smsText);
 
             Response challengeResponse =

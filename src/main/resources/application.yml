@@ -2,13 +2,26 @@ server:
   port: 8083
 
 spring:
+  profiles:
+    active: local
   jpa:
     defer-datasource-initialization: true
   datasource:
-    username: root
-    password: kaca
+    username: tbd
+    password: tbd
     url: jdbc:mysql://localhost:3306/new
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.gmail.com
+    username: tbd
+    password: tbd
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 keycloak:
   server:
@@ -17,4 +30,8 @@ keycloak:
       username: admin
       password: password
     realmImportFile: aes-realm.json
+
+sms:
+  TWILIO_ACCOUNT_SID: tbd
+  TWILIO_AUTH_TOKEN: tbd
 
