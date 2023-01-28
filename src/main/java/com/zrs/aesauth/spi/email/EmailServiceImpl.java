@@ -1,6 +1,5 @@
 package com.zrs.aesauth.spi.email;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -26,13 +25,14 @@ public class EmailServiceImpl implements IEmailService {
 
     private final ITemplateEngine thymeleafTemplateEngine;
 
-    @Value("${spring.mail.username}")
     private String emailUsername;
 
-    @Value("${spring.mail.password}")
     private String emailPassword;
 
     public EmailServiceImpl() {
+        this.emailUsername = System.getenv("mail_username");
+        this.emailPassword = System.getenv("mail_password");
+
         emailSender = new JavaMailSenderImpl();
         ((JavaMailSenderImpl) emailSender).setHost("smtp.gmail.com");
         ((JavaMailSenderImpl) emailSender).setPort(587);

@@ -86,7 +86,8 @@ public class VerifyPhoneNumberRequiredAction
             config.put("senderId", senderId);
             config.put("simulation", String.valueOf(simulation));
 
-            smsService.sendVerifyPhoneNumberSms(user.getFirstAttribute("firstName"), otp, user.getFirstAttribute("phoneNumber"));
+            smsService.sendVerifyPhoneNumberSms(user.getFirstAttribute("firstName"), otp,
+                    user.getFirstAttribute("phoneNumber"));
             emailService.sendVerifyPhoneNumberEmail(user.getFirstAttribute("firstName"), otp, user.getEmail());
             SmsServiceFactory.get(config).send(phoneNumber, smsText);
 
