@@ -25,7 +25,7 @@ public class SmsServiceImpl implements ISmsService {
         String message =
                 firstName + ", your OTP is " + otp;
         Message.creator(new PhoneNumber(phoneNumber),
-                new PhoneNumber("+16294682658"), message).create();
+                new PhoneNumber("+12544428507"), message).create();
     }
 
     @Override
@@ -34,6 +34,6 @@ public class SmsServiceImpl implements ISmsService {
         String message =
                 firstName + ", your OTP is " + otp;
         Message.creator(new PhoneNumber(phoneNumber),
-                new PhoneNumber("+16294682658"), message).create();
+                new PhoneNumber("+12544428507"), message).create();
     }
 }
